@@ -30,8 +30,18 @@ import { mapState } from 'vuex';
 import { ResizeEvents } from 'src/components/Resize'
 import MapModal from 'src/components/Modals/MapModal'
 
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from "ol/source/OSM";
+import {
+  getPointResolution,
+  fromLonLat,
+  transform,
+  METERS_PER_UNIT,
+} from "ol/proj";
+
 const googleMaps = require('google-maps-api')('AIzaSyDIja3lnhq63SxukBm9_mA-jn5R0Bj9RN8', ['places']);
-const ol = require('openlayers');
 const d3 = require('d3');
 
 export default {
@@ -99,9 +109,9 @@ export default {
     loadMap() {
       window.ol = ol;
       this.$refs.map.innerHTML = '';
-      this.view = new ol.View();
-      this.map = new ol.Map({
-        layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+      this.view = new View();
+      this.map = new Map({
+        layers: [new TileLayer({ source: new OSM() })],
         target: 'map',
         view: this.view,
       });
@@ -125,7 +135,7 @@ export default {
       this.map.updateSize();
 
       // current long/lat map position in meters
-      const mapCenter = ol.proj.fromLonLat([this.longitude, this.latitude]);
+      const mapCenter = fromLonLat([this.longitude, this.latitude]);
 
       let resolution = this.unAdjustedResolution;
       let deltaY = this.unAdjustedDelta.y;
@@ -133,8 +143,8 @@ export default {
       // Web Mercator projections use different resolutions at different latitudes
       // if the map has been placed, adjust the values for the current latitude
       if (this.view.getCenter()) {
-        this.startResolution = this.startResolution || ol.proj.getPointResolution(this.view.getProjection(), this.view.getResolution(), this.view.getCenter());
-        const resolutionAdjustment = 1 / ol.proj.getPointResolution(this.view.getProjection(), 1, this.view.getCenter());
+        this.startResolution = this.startResolution || getPointResolution(this.view.getProjection(), this.view.getResolution(), this.view.getCenter());
+        const resolutionAdjustment = 1 / getPointResolution(this.view.getProjection(), 1, this.view.getCenter());
 
         resolution *= resolutionAdjustment;
         deltaY *= resolutionAdjustment;
@@ -154,11 +164,11 @@ export default {
     * after the user places the map, save the latitude, longitude, and rotation
     */
     finishSetup() {
-      const center = ol.proj.transform(this.view.getCenter(), 'EPSG:3857', 'EPSG:4326')
+      const center = transform(this.view.getCenter(), 'EPSG:3857', 'EPSG:4326')
       this.longitude = center[0];
       this.latitude = center[1];
 
-      const resolution = ol.proj.getPointResolution(this.view.getProjection(), this.view.getResolution(), this.view.getCenter());
+      const resolution = getPointResolution(this.view.getProjection(), this.view.getResolution(), this.view.getCenter());
       const scale = this.startResolution / resolution;
       console.log(`scaling to ${this.startResolution} / ${resolution} == ${scale}`);
       window.eventBus.$emit('scaleTo', scale);
@@ -211,7 +221,7 @@ export default {
       units: state => state.project.config.units,
       mapInitialized: state => state.project.map.initialized,
     }),
-    mPerFt() { return ol.proj.METERS_PER_UNIT['us-ft']; },
+    mPerFt() { return METERS_PER_UNIT['us-ft']; },
     unAdjustedResolutionMeters() {
       // default map resolution RWU/px
       return (this.max_x - this.min_x) / this.$refs.map.clientWidth;
