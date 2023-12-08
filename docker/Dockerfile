@@ -1,12 +1,14 @@
-FROM --platform=linux/amd64 ubuntu:latest AS floorspacejs-dev
+FROM --platform=linux/amd64 httpd:latest AS floorspacejs-dev
 
 RUN apt-get update && \
-    apt-get install -y libappindicator1 fonts-liberation ruby-full python3-pip npm python2
+    apt-get install -y libappindicator1 fonts-liberation ruby-full python3-pip npm curl
 
-# Something in the NPM installation wants there to be a `python` command in the PATH that
-# maps to python2
-RUN ln -s `which python2` /usr/local/bin/python
+# Install nvm and update to latest version of node.js
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
+    . /root/.nvm/nvm.sh && \
+    nvm install v20.10.0
 
 ADD . /app
+WORKDIR /app
 
 CMD tail -f /dev/null
