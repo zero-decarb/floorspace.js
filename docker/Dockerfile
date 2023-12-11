@@ -17,5 +17,3 @@ ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
 ADD . /app
 WORKDIR /app
-
-CMD tail -f /dev/null

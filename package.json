@@ -32,7 +32,7 @@
     "proxy-polyfill": "^0.3.2",
     "vue": "^2.7.15",
     "vue-swatches": "^1.0.4",
-    "vue-virtual-scroller": "^1.1.2",
+    "vue-virtual-scroller": "1.1.0",
     "vuex": "^2.5.0"
   },
   "devDependencies": {
@@ -52,6 +52,7 @@
     "connect-history-api-fallback": "^1.5.0",
     "cross-spawn": "^7.0.3",
     "css-loader": "^0.25.0",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^2.0.7",
@@ -62,7 +63,6 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.5.1",
     "eslint-plugin-standard": "^2.3.1",
-    "eslint": "^3.19.0",
     "eventsource-polyfill": "^0.9.6",
     "express": "^4.16.2",
     "extract-text-webpack-plugin": "^1.0.1",
@@ -74,6 +74,7 @@
     "inject-loader": "^2.0.1",
     "isparta-loader": "^2.0.0",
     "json-loader": "^0.5.7",
+    "karma": "^3.1.4",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^1.1.1",
     "karma-log-reporter": "^0.0.4",
@@ -82,7 +83,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "^0.0.26",
     "karma-webpack": "^1.8.1",
-    "karma": "^3.1.4",
     "lolex": "^1.6.0",
     "mocha": "^3.5.3",
     "nightwatch": "^0.9.19",
@@ -94,20 +94,24 @@
     "selenium-server": "^2.53.1",
     "semver": "^5.4.1",
     "shelljs": "^0.7.8",
-    "sinon-chai": "^2.14.0",
     "sinon": "^2.4.1",
+    "sinon-chai": "^2.14.0",
     "surge": "^0.20.1",
     "svg-inline-loader": "^0.8.0",
     "testcheck": "^1.0.0-rc.2",
     "url-loader": "^0.5.9",
     "vue-loader": "^10.3.0",
     "vue-style-loader": "^1.0.0",
-    "vue-svg-loader": "^0.2.0",
     "vue-svg": "^1.0.1",
-    "vue-template-compiler": "^2.6.14",
+    "vue-svg-loader": "^0.2.0",
+    "vue-template-compiler": "^2.7.15",
+    "webpack": "1.15.0",
     "webpack-dev-middleware": "^1.12.2",
     "webpack-hot-middleware": "^2.21.0",
-    "webpack-merge": "^0.14.1",
-    "webpack": "1.15.0"
+    "webpack-merge": "^0.14.1"
+  },
+  "engines": {
+    "node": ">= 20.0.0",
+    "npm": ">= 10.0.0"
   }
 }
