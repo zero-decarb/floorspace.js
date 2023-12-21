@@ -10,14 +10,22 @@ Read [the docs](https://nrel.github.io/floorspace.js/docs) then try out the [lat
 ## Build Setup
 
 ``` bash
-# install dependencies
-npm install
+# install node using nvm
+$ nvm install 18
+$ nvm use 18
+$ npm install --global yarn
+
+# install and update dependencies (optional)
+yarn install
+
+# install locked dependencies
+yarn install --frozen-lockfile
 
 # serve with hot reload at localhost:8080
-npm run dev
+yarn wp:dev
 
 # build for production with minification
-npm run build
+yarn wp:build
 
 # build single page output for openstudio
 npm run openstudio-build

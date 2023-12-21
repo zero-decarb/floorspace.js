@@ -8,8 +8,6 @@ services:
       target: floorspacejs-dev
     container_name: floorspacejs-dev
     ports:
-      - "898:8080"
-      - "899:80"
+      - "898:80"
     volumes:
-      - ..:/app
       - ../dist/:/usr/local/apache2/htdocs/
