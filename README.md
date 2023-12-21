@@ -48,3 +48,22 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 [Tests](https://travis-ci.org/NREL/floorspace.js) are run on each pull request. Current status: [![Build Status](https://travis-ci.org/NREL/floorspace.js.svg?branch=develop)](https://travis-ci.org/NREL/floorspace.js)
 
+# Zero - Local development
+The application can be run from a Docker container by doing the following:
+
+```bash
+# start the Docker container
+cd docker
+docker-compose up -d
+
+# Open a terminal in the container
+docker exec -it floorspacejs-dev bash
+
+# Install NPM dependencies in the container
+npm install
+
+# Launch the server
+npm run dev
+```
+
+Once you've done this, you can access the application at localhost:898
