@@ -4,9 +4,13 @@
   ];
 
   const message_type_handlers = {
+    init_api: () => {
+      window.api.setConfig({}); // Silly to set an empty config, but the application breaks without this
+      window.api.init();
+    },
     open_floorplan: (floorplan_json) => window.api.openFloorplan(floorplan_json),
     register_change_listener: (change_handler) => {
-      const floorplanObj = frameWindow.api.exportFloorplan();
+      const floorplanObj = window.api.exportFloorplan();
       const floorplanJson = JSON.stringify(floorplanObj);
       change_handler(floorplanJson);
     }
@@ -19,6 +23,7 @@
     if (!(message_type in message_type_handlers)) {
       throw Error(`Unknown message type "${message_type}, allowed: ${Object.keys(message_type_handlers).join(', ')}`);
     }
+    console.log(`embedded Floorspace app - received message of type '${message_type}'`, data);
     message_type_handlers[message_type](data);
   });
 }());

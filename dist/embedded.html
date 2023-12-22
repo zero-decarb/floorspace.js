@@ -35,24 +35,11 @@
       const frameWindow = document.querySelector('iframe').contentWindow;
 
       window.addEventListener('load', function() {
-        frameWindow.api.setConfig({
-          onChange: function() {
-            // console.log('change occurred in embedded app');
-          },
-        });
-        frameWindow.api.init();
+        postMessageToEmbeddedApp('init_api');
 
-      // TODO: This is an example of how to download a floorplan back from the Floorspace API,
-      //  we'll need to do this to persist changes made by the user
-      const floorplanDownloadLink = document.createElement('a');
-      floorplanDownloadLink.setAttribute('download', 'floorplan.json');
-      document.querySelector('#download-floorplan').addEventListener('click', function() {
-        const floorplanJson = JSON.stringify(frameWindow.api.exportFloorplan());
-        floorplanDownloadLink.setAttribute(
-          'href',
-          'data:text/json;charset=utf-8,' + encodeURIComponent(floorplanJson)
-        );
-        floorplanDownloadLink.click();
+        postMessageToEmbeddedApp('register_change_listener', function(updatedFloorspaceJson) {
+          console.log("Updated FloorspaceJS JSON", updatedFloorspaceJson);
+        });
       });
 
       /**
@@ -82,13 +69,7 @@
           floorspaceJson = JSON.stringify(floorspaceJson);
         }
 
-        frameWindow.postMessage(
-          {
-            'message_type': 'open_floorplan',
-            'data': floorspaceJson,
-          },
-          IFRAME_ORIGIN
-        );
+        postMessageToEmbeddedApp('open_floorplan', floorspaceJson);
       }
 
       /**
@@ -108,6 +89,17 @@
             body: cubicasaJson
           }
         ).then(response => response.text());
+      }
+
+      function postMessageToEmbeddedApp(message_type, data) {
+        console.log(`embedded.html - posting message of type '${message_type}' to embedded app`, data);
+        frameWindow.postMessage(
+          {
+            'message_type': message_type,
+            'data': data || "",
+          },
+          IFRAME_ORIGIN
+        );
       }
     </script>
   </body>
