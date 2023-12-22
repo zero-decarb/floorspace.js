@@ -65,17 +65,31 @@
         reader.onload = readerLoadEvent => {
           translateCubicasaToFloorspace(
             readerLoadEvent.currentTarget.result
-          ).then(floorspaceJson => frameWindow.postMessage(
-              {
-                'message_type': 'open_floorplan',
-                'data': floorspaceJson,
-              },
-              IFRAME_ORIGIN
-            ));
+          ).then(
+            floorspaceJson => openFloorplanInEmbeddedFloorspaceJsApp(floorspaceJson)
+          );
         };
 
         reader.readAsText(e.target.files[0]);
       });
+
+      /**
+       * Pass a floorplan in FloorspaceJS JSON format to have it opened in the embedded FloorspaceJS app
+       * @param {string|object} floorspaceJson
+       */
+      function openFloorplanInEmbeddedFloorspaceJsApp(floorspaceJson) {
+        if (typeof floorspaceJson === 'object') {
+          floorspaceJson = JSON.stringify(floorspaceJson);
+        }
+
+        frameWindow.postMessage(
+          {
+            'message_type': 'open_floorplan',
+            'data': floorspaceJson,
+          },
+          IFRAME_ORIGIN
+        );
+      }
 
       /**
        * Given a floor plan in cubi.casa JSON representation, use the translator API method to
