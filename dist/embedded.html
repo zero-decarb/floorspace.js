@@ -75,28 +75,23 @@
         const reader = new FileReader();
         reader.onload = readerLoadEvent => {
           const cubicasaJson = readerLoadEvent.currentTarget.result;
-          fetch(TRANSLATOR_API_URL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: cubicasaJson
-          }).then(
-            response => {
-              debugger;
-              return response.text();
+          fetch(
+            TRANSLATOR_API_URL,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: cubicasaJson
             }
-          ).then(
-            jsonString => {
-              debugger;
-              frameWindow.postMessage(
-                {
-                  'message_type': 'open_floorplan',
-                  'data': jsonString,
-                },
-                IFRAME_ORIGIN
-              );
-            }
+          ).then(response => response.text())
+           .then(jsonString => frameWindow.postMessage(
+              {
+                'message_type': 'open_floorplan',
+                'data': jsonString,
+              },
+              IFRAME_ORIGIN
+            )
           );
         };
 
