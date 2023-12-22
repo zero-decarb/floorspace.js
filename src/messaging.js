@@ -5,6 +5,11 @@
 
   const message_type_handlers = {
     open_floorplan: (floorplan_json) => window.api.openFloorplan(floorplan_json),
+    register_change_listener: (change_handler) => {
+      const floorplanObj = frameWindow.api.exportFloorplan();
+      const floorplanJson = JSON.stringify(floorplanObj);
+      change_handler(floorplanJson);
+    }
   };
 
   window.addEventListener('message', ({ data: { message_type, data }, origin }) => {
