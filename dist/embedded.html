@@ -36,10 +36,6 @@
 
       window.addEventListener('load', function() {
         postMessageToEmbeddedApp('init_api');
-
-        postMessageToEmbeddedApp('register_change_listener', function(updatedFloorspaceJson) {
-          console.log("Updated FloorspaceJS JSON", updatedFloorspaceJson);
-        });
       });
 
 
