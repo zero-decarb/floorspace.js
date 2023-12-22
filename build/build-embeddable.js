@@ -38,18 +38,23 @@ const standaloneHtml = baseHtml + `
 writeFileSync(distPath + '/standalone_geometry_editor.html', standaloneHtml);
 console.log(`Loading floorspace.js API script from: ${srcPath + '/api.js'}\n\n`);
 const apiScripts = readFileSync(srcPath + '/api.js', { encoding: 'utf-8' });
+
+console.log(`Loading messaging.js API script from: ${srcPath + '/messaging.js'}\n\n`);
+const messagingScripts = readFileSync(srcPath + '/messaging.js', { encoding: 'utf-8' });
+
 const lodash = readFileSync('./node_modules/lodash/lodash.min.js', { encoding: 'utf-8' });
 
 const embeddableHtml = baseHtml + `
-    <script>
+    <script id="lodash">
         ${lodash}
     </script>
-    <script>
+    <script id="startApp">
       window.startApp = function() {
         ${scripts}
       }
     </script>
-    <script> ${apiScripts} </script>
+    <script id="api"> ${apiScripts} </script>
+    <script id="messaging"> ${messagingScripts} </script>
     </body>
 </html>`;
 

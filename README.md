@@ -55,15 +55,19 @@ The application can be run from a Docker container by doing the following:
 # start the Docker container
 cd docker
 docker-compose up -d
-
-# Open a terminal in the container
-docker exec -it floorspacejs-dev bash
-
-# Install NPM dependencies in the container
-npm install
-
-# Launch the server
-npm run dev
 ```
 
-Once you've done this, you can access the application at localhost:898
+Once you've done this, you can access the application at localhost:898. The embedded version (embedded in
+a sample host page) is at localhost:898/embedded.html. The embeddable version itself is directly accessible
+at localhost:898/embeddable_geometry_editor.html.
+
+TODO: These Docker commands don't work right now. For now just invoke `npm run openstudio-build` and `yarn build`
+      in your host, or rebuild your Docker container.
+If you are using Docker, you can rebuild the application with
+```bash
+# Standalone version
+npm run docker-build
+
+# Embedded version
+npm run docker-openstudio-build
+```

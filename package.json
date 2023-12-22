@@ -134,6 +134,8 @@
     "unit": "karma start test/unit/karma.conf.js",
     "wp:build": "cross-env NODE_ENV=production webpack --config ./build/webpack.prod.conf.js --progress",
     "wp:dev": "webpack serve --hot --config ./build/webpack.dev.conf.js --progress",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "docker-build": "docker-compose -f docker/docker-compose.yml exec dev-server yarn wp:build",
+    "docker-openstudio-build": "docker-compose -f docker/docker-compose.yml exec dev-server npm run openstudio-build"
   }
 }

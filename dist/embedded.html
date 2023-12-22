@@ -26,6 +26,11 @@
     </p>
     <iframe src="embeddable_geometry_editor.html"></iframe>
     <script>
+      // Right now the embedded FloorspaceJS and the hosting window share an origin,
+      // but it's likely that will change - be careful not to do anything that will
+      // break in that case due to same origin policy!
+      const IFRAME_ORIGIN = window.location;
+
       const frameWindow = document.querySelector('iframe').contentWindow;
 
       window.addEventListener('load', function() {
@@ -39,7 +44,16 @@
         // TODO: This is an example of how to load a floorplan via Floorspace's API
         fetch('sample.floorspace.json')
           .then(response => response.text())
-          .then(text => frameWindow.api.openFloorplan(text))
+          .then(jsonString => frameWindow.postMessage(
+            {
+              'message_type': 'open_floorplan',
+              'data': jsonString,
+            },
+            IFRAME_ORIGIN
+          ))
+          // This is the way the FloorspaceJS project's documentation suggests triggering Floorspace behaviors,
+          // by accessing the api object directly from the iframe window
+          //.then(text => frameWindow.api.openFloorplan(text))
           .catch(error => console.error('Error loading the floorplan:', error));
       });
 
@@ -60,7 +74,7 @@
       //  we'll ever need that for Zero's use case, since I think user interactions will always be
       //  at the home level, so we'll always be generating the floorspace file from cubi.casa data
       //  and then opening the result.
-      document.querySelector('#import-floorplan').addEventListener('change', function(e) {
+      document.querySelector('#import-floorplan').addEventListener('click', function(e) {
         const reader = new FileReader();
         reader.onload = theFile => frameWindow.api.openFloorplan(theFile.currentTarget.result);
         reader.readAsText(e.target.files[0]);
