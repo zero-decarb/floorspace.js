@@ -5,15 +5,19 @@
 
   const message_type_handlers = {
     init_api: () => {
-      window.api.setConfig({}); // Silly to set an empty config, but the application breaks without this
+      window.api.setConfig({
+        onChange: () => {
+          const floorplanObj = window.api.exportFloorplan();
+          const floorplanJson = JSON.stringify(floorplanObj);
+          window.parent.postMessage({
+            message_type: 'change',
+            data: floorplanJson
+          }, 'http://localhost:898') //TODO: Update target origin
+        }
+      }); // Silly to set an empty config, but the application breaks without this
       window.api.init();
     },
     open_floorplan: (floorplan_json) => window.api.openFloorplan(floorplan_json),
-    register_change_listener: (change_handler) => {
-      const floorplanObj = window.api.exportFloorplan();
-      const floorplanJson = JSON.stringify(floorplanObj);
-      change_handler(floorplanJson);
-    },
   };
 
   window.addEventListener('message', ({ data: { message_type, data }, origin }) => {

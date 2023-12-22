@@ -42,6 +42,20 @@
         });
       });
 
+
+      const message_type_handlers = {
+        change: (updatedFloorspaceJson) => {
+          console.log("embedded.html - got updated floorspace JSON", updatedFloorspaceJson);
+        },
+      };
+      window.addEventListener('message', ({ data: { message_type, data }, origin }) => {
+        if (!(message_type in message_type_handlers)) {
+          throw Error(`Unknown message type "${message_type}, allowed: ${Object.keys(message_type_handlers).join(', ')}`);
+        }
+        console.log(`embedded.html - received message of type '${message_type}'`);
+        message_type_handlers[message_type](data);
+      });
+
       /**
        * When the "Import cubicasa floorplan" input is used to select a CubiCasa JSON file,
        * translate that file into FloorspaceJS JSON format and pass it on to the embedded
