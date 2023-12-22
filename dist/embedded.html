@@ -92,7 +92,7 @@
       }
 
       function postMessageToEmbeddedApp(message_type, data) {
-        console.log(`embedded.html - posting message of type '${message_type}' to embedded app`, data);
+        console.log(`embedded.html - posting message of type '${message_type}' to embedded app`);
         frameWindow.postMessage(
           {
             'message_type': message_type,

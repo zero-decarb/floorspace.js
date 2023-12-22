@@ -23,7 +23,7 @@
     if (!(message_type in message_type_handlers)) {
       throw Error(`Unknown message type "${message_type}, allowed: ${Object.keys(message_type_handlers).join(', ')}`);
     }
-    console.log(`embedded Floorspace app - received message of type '${message_type}'`, data);
+    console.log(`embedded Floorspace app - received message of type '${message_type}'`);
     message_type_handlers[message_type](data);
   });
 }());
