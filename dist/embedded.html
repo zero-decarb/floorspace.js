@@ -18,9 +18,6 @@
   <body>
     <h3>Look, Ma, I embedded Floorspace.js!</h3>
     <p>
-      <button id="download-floorplan">Download Floorplan</button>
-    </p>
-    <p>
       Import cubi.casa data
       <input type="file" id="import-floorplan" accept="application/json">
     </p>
@@ -37,7 +34,6 @@
       window.addEventListener('load', function() {
         postMessageToEmbeddedApp('init_api');
       });
-
 
       const message_type_handlers = {
         change: (updatedFloorspaceJson) => {
