@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  dev-server:
+  floorspace-dev-server:
     build:
       context: ..
       dockerfile: docker/Dockerfile

@@ -21,15 +21,16 @@
       <button id="download-floorplan">Download Floorplan</button>
     </p>
     <p>
-      Import Floorplan
-      <input type="button" id="import-floorplan">
+      Import cubi.casa data
+      <input type="file" id="import-floorplan" accept="application/json">
     </p>
-    <iframe src="embeddable_geometry_editor.html"></iframe>
+    <iframe id="floorspace_iframe" src="embeddable_geometry_editor.html"></iframe>
     <script>
       // Right now the embedded FloorspaceJS and the hosting window share an origin,
       // but it's likely that will change - be careful not to do anything that will
       // break in that case due to same origin policy!
       const IFRAME_ORIGIN = window.location;
+      const TRANSLATOR_API_URL = 'http://localhost:899';
 
       const frameWindow = document.querySelector('iframe').contentWindow;
 
@@ -42,7 +43,7 @@
         frameWindow.api.init();
 
         // TODO: This is an example of how to load a floorplan via Floorspace's API
-        fetch('sample.floorspace.json')
+        /*fetch('sample.floorspace.json')
           .then(response => response.text())
           .then(jsonString => frameWindow.postMessage(
             {
@@ -54,11 +55,11 @@
           // This is the way the FloorspaceJS project's documentation suggests triggering Floorspace behaviors,
           // by accessing the api object directly from the iframe window
           //.then(text => frameWindow.api.openFloorplan(text))
-          .catch(error => console.error('Error loading the floorplan:', error));
+          .catch(error => console.error('Error loading the floorplan:', error));*/
       });
 
       // TODO: This is an example of how to download a floorplan back from the Floorspace API,
-      //  we'll need to do this to persist the
+      //  we'll need to do this to persist changes made by the user
       const floorplanDownloadLink = document.createElement('a');
       floorplanDownloadLink.setAttribute('download', 'floorplan.json');
       document.querySelector('#download-floorplan').addEventListener('click', function() {
@@ -70,13 +71,35 @@
         floorplanDownloadLink.click();
       });
 
-      // TODO: This is an example of how to open a floorplan via manual file upload - I'm not sure
-      //  we'll ever need that for Zero's use case, since I think user interactions will always be
-      //  at the home level, so we'll always be generating the floorspace file from cubi.casa data
-      //  and then opening the result.
-      document.querySelector('#import-floorplan').addEventListener('click', function(e) {
+      document.querySelector('#import-floorplan').addEventListener('change', function(e) {
         const reader = new FileReader();
-        reader.onload = theFile => frameWindow.api.openFloorplan(theFile.currentTarget.result);
+        reader.onload = readerLoadEvent => {
+          const cubicasaJson = readerLoadEvent.currentTarget.result;
+          fetch(TRANSLATOR_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: cubicasaJson
+          }).then(
+            response => {
+              debugger;
+              return response.text();
+            }
+          ).then(
+            jsonString => {
+              debugger;
+              frameWindow.postMessage(
+                {
+                  'message_type': 'open_floorplan',
+                  'data': jsonString,
+                },
+                IFRAME_ORIGIN
+              );
+            }
+          );
+        };
+
         reader.readAsText(e.target.files[0]);
       });
     </script>
