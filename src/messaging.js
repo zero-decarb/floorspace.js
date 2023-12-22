@@ -13,7 +13,7 @@
       const floorplanObj = window.api.exportFloorplan();
       const floorplanJson = JSON.stringify(floorplanObj);
       change_handler(floorplanJson);
-    }
+    },
   };
 
   window.addEventListener('message', ({ data: { message_type, data }, origin }) => {
