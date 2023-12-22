@@ -42,22 +42,6 @@
         });
         frameWindow.api.init();
 
-        // TODO: This is an example of how to load a floorplan via Floorspace's API
-        /*fetch('sample.floorspace.json')
-          .then(response => response.text())
-          .then(jsonString => frameWindow.postMessage(
-            {
-              'message_type': 'open_floorplan',
-              'data': jsonString,
-            },
-            IFRAME_ORIGIN
-          ))
-          // This is the way the FloorspaceJS project's documentation suggests triggering Floorspace behaviors,
-          // by accessing the api object directly from the iframe window
-          //.then(text => frameWindow.api.openFloorplan(text))
-          .catch(error => console.error('Error loading the floorplan:', error));*/
-      });
-
       // TODO: This is an example of how to download a floorplan back from the Floorspace API,
       //  we'll need to do this to persist changes made by the user
       const floorplanDownloadLink = document.createElement('a');
@@ -71,32 +55,46 @@
         floorplanDownloadLink.click();
       });
 
+      /**
+       * When the "Import cubicasa floorplan" input is used to select a CubiCasa JSON file,
+       * translate that file into FloorspaceJS JSON format and pass it on to the embedded
+       * FloorspaceJS app to be opened
+       */
       document.querySelector('#import-floorplan').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = readerLoadEvent => {
-          const cubicasaJson = readerLoadEvent.currentTarget.result;
-          fetch(
-            TRANSLATOR_API_URL,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: cubicasaJson
-            }
-          ).then(response => response.text())
-           .then(jsonString => frameWindow.postMessage(
+          translateCubicasaToFloorspace(
+            readerLoadEvent.currentTarget.result
+          ).then(floorspaceJson => frameWindow.postMessage(
               {
                 'message_type': 'open_floorplan',
-                'data': jsonString,
+                'data': floorspaceJson,
               },
               IFRAME_ORIGIN
-            )
-          );
+            ));
         };
 
         reader.readAsText(e.target.files[0]);
       });
+
+      /**
+       * Given a floor plan in cubi.casa JSON representation, use the translator API method to
+       * generate the equivalent floor plan in FloorspaceJS representation.
+       * @param {string} cubicasaJson
+       * @returns {Promise<string>}
+       */
+      async function translateCubicasaToFloorspace(cubicasaJson) {
+        return fetch(
+          TRANSLATOR_API_URL,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: cubicasaJson
+          }
+        ).then(response => response.text());
+      }
     </script>
   </body>
 </html>
