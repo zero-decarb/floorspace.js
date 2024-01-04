@@ -1,6 +1,10 @@
 (function () {
   const ALLOWED_ORIGINS = [
     window.location.origin,
+    'http://localhost:3000',
+    'https://staging.zerohomes.io',
+    'https://app.zerohomes.io',
+    'https://storage.googleapis.com',
   ];
 
   const message_type_handlers = {
@@ -11,9 +15,9 @@
           const floorplanJson = JSON.stringify(floorplanObj);
           window.parent.postMessage({
             message_type: 'change',
-            data: floorplanJson
-          }, 'http://localhost:898') //TODO: Update target origin
-        }
+            data: floorplanJson,
+          }, 'http://localhost:3000'); // TODO: Update target origin
+        },
       }); // Silly to set an empty config, but the application breaks without this
       window.api.init();
     },

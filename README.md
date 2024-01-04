@@ -2,6 +2,28 @@
 
 > a widget for creating 2d geometry for building energy models
 
+## Zero - Local development
+The application can be run from a Docker container by doing the following:
+
+```bash
+make build        # Builds the docker image
+make build-embed  # Builds the embedded version
+make run          # Runs and attaches
+make run-detach   # Runs in detached mode
+```
+
+When the container is running, you can access:
+- [http://localhost:898](http://localhost:898): Floorspace.js
+- [http://localhost:898/embedded.html](http://localhost:898/embedded.html): Embedded in
+a sample host page
+- [http://localhost:898/embeddable_geometry_editor.html](http://localhost:898/embeddable_geometry_editor.html): Directly access the embeddable version itself.
+
+To build the embedded versions from source without rebuilding the entire container:
+```bash
+make build-standalone   # Standalone version only
+make build-embed        # Embedded version, as well as standalone
+```
+
 
 ## Getting Started
 
@@ -45,29 +67,3 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-
-[Tests](https://travis-ci.org/NREL/floorspace.js) are run on each pull request. Current status: [![Build Status](https://travis-ci.org/NREL/floorspace.js.svg?branch=develop)](https://travis-ci.org/NREL/floorspace.js)
-
-# Zero - Local development
-The application can be run from a Docker container by doing the following:
-
-```bash
-# start the Docker container
-cd docker
-docker-compose up -d
-```
-
-Once you've done this, you can access the application at localhost:898. The embedded version (embedded in
-a sample host page) is at localhost:898/embedded.html. The embeddable version itself is directly accessible
-at localhost:898/embeddable_geometry_editor.html.
-
-TODO: These Docker commands don't work right now. For now just invoke `npm run openstudio-build` and `yarn build`
-      in your host, or rebuild your Docker container.
-If you are using Docker, you can rebuild the application with
-```bash
-# Standalone version
-npm run docker-build
-
-# Embedded version
-npm run docker-openstudio-build
-```

@@ -4,10 +4,12 @@ services:
   floorspace-dev-server:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: build/Dockerfile
       target: floorspacejs-dev
     container_name: floorspacejs-dev
+    platform: linux/amd64
     ports:
       - "898:80"
     volumes:
       - ../dist/:/usr/local/apache2/htdocs/
+      - ../:/app
