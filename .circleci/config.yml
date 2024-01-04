@@ -1,0 +1,97 @@
+version: 2.1
+
+orbs:
+  gcp-cli: circleci/gcp-cli@3.1.1
+  slack: circleci/slack@4.12.5
+
+commands:
+  auth_gcp:
+    description: Set GCP Authentication
+    steps:
+      - run:
+          name: Set GCP Environment variables
+          command: |
+            echo "$GCLOUD_SERVICE_KEY" >> "service-account-keyfile.json"
+            export GOOGLE_APPLICATION_CREDENTIALS=/root/project/service-account-keyfile.json
+
+jobs:
+  build-and-upload:
+    docker:
+      - image: cimg/base:current
+    parameters:
+      env:
+        type: string
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: "Build project"
+          command: docker build -f build/Dockerfile -t floorspace-js .
+      - run:
+          name: "Build embeddable floorspace.js"
+          command: docker run --name floorspace-js-container floorspace-js yarn openstudio-build
+      - run:
+          name: "Copy files from container to host"
+          command: |
+              docker cp floorspace-js-container:/app/dist ./dist
+      - auth_gcp
+      - gcp-cli/setup
+      - run:
+          name: Determine GCS Bucket
+          command: |
+            if [ "<< parameters.env >>" == "prd" ]; then
+              GCS_BUCKET="embed.zerohomes.io"
+            elif [ "<< parameters.env >>" == "stg" ]; then
+              GCS_BUCKET="embed.stg.zerohomes.io"
+            else
+              GCS_BUCKET="embed.dev.zerohomes.io"
+            fi
+            echo "export GCS_BUCKET=${GCS_BUCKET}" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Upload files to GCS Bucket
+          command: gsutil cp -r ./dist gs://${GCS_BUCKET}/floorspace
+      - slack/notify:
+          event: pass
+          template: SUCCESS_WITH_ENV
+      - slack/notify:
+          event: fail
+          template: FAIL_WITH_ENV
+
+workflows:
+  deploy-lower-environments:
+    jobs:
+      - build-and-upload:
+          name: deploy-dev
+          env: dev
+          context:
+            - slack-secrets
+            - slack-templates
+          filters:
+            branches:
+              only: develop
+
+      - build-and-upload:
+          name: deploy-stg
+          env: stg
+          context:
+            - slack-secrets
+            - slack-templates
+          filters:
+            branches:
+              only: develop
+
+  deploy-production:
+    jobs:
+      - build-and-upload:
+          name: deploy-prd
+          env: prd
+          context:
+            - slack-secrets
+            - slack-templates
+          filters:
+            tags:
+              only: /^v[0-9]+.[0-9]+.[0-9]+/
+            branches:
+              ignore: /.*/

@@ -30,7 +30,8 @@ help:
 
 .PHONY: build
 build: ## Build containers for the service and runs the build commands as well
-	$(DOCKER_COMPOSE) build && make build-embed
+	$(DOCKER_COMPOSE) build
+	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
 
 build-standalone: run-detach ## Builds standalone version
 	$(DOCKER_COMPOSE_EXEC) yarn build
