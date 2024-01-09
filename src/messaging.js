@@ -18,7 +18,7 @@
             data: floorplanJson,
           }, 'http://localhost:3000'); // TODO: Update target origin
         },
-      }); // Silly to set an empty config, but the application breaks without this
+      });
       window.api.init();
     },
     open_floorplan: (floorplan_json) => window.api.openFloorplan(floorplan_json),
