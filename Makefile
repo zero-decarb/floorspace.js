@@ -31,7 +31,7 @@ help:
 .PHONY: build
 build: ## Build containers for the service and builds the Floorspace.js project's embedded mode
 	$(DOCKER_COMPOSE) build
-	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
+	$(MAKE) build-embed
 
 build-standalone: run-detach ## Launches detached version of service containers and builds standalone version
 	$(DOCKER_COMPOSE_EXEC) yarn build
