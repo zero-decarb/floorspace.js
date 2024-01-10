@@ -33,12 +33,10 @@ build: ## Build containers for the service and builds the Floorspace.js project'
 	$(DOCKER_COMPOSE) build
 	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
 
-build-standalone: ## Launches detached version of service containers and builds standalone version
-  run-detach
+build-standalone: run-detach ## Launches detached version of service containers and builds standalone version
 	$(DOCKER_COMPOSE_EXEC) yarn build
 
-build-embed: ## Launches detached version of service containers and builds the Floorspace.js project's embedded mode
-  run-detach
+build-embed: run-detach ## Launches detached version of service containers and builds the Floorspace.js project's embedded mode
 	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
 
 run: ## Run containers for the service
@@ -49,3 +47,5 @@ run-detach: ## Run containers in the background
 
 stop: ## Stop and remove containers for the service
 	$(DOCKER_COMPOSE) down
+
+rebuild-and-restart: stop build run-detach ## Rebuild both the Docker containers and the embedded Floorspace.js app, then relaunch the Docker services
