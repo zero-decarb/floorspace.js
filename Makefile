@@ -29,14 +29,16 @@ help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
 .PHONY: build
-build: ## Build containers for the service and runs the build commands as well
+build: ## Build containers for the service and builds the Floorspace.js project's embedded mode
 	$(DOCKER_COMPOSE) build
 	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
 
-build-standalone: run-detach ## Builds standalone version
+build-standalone: ## Launches detached version of service containers and builds standalone version
+  run-detach
 	$(DOCKER_COMPOSE_EXEC) yarn build
 
-build-embed: run-detach ## Builds embedded page
+build-embed: ## Launches detached version of service containers and builds the Floorspace.js project's embedded mode
+  run-detach
 	$(DOCKER_COMPOSE_EXEC) yarn openstudio-build
 
 run: ## Run containers for the service
