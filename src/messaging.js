@@ -16,7 +16,7 @@
           window.parent.postMessage({
             message_type: 'change',
             data: floorplanJson,
-          }, 'http://localhost:3000'); // TODO: Update target origin
+          }, window.parent.location.origin);
         },
       });
       window.api.init();
